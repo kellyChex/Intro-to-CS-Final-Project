@@ -98,18 +98,20 @@ Freda likes to play Starfleet Commander, Ninja Hamsters, Seahorse Adventures."
 def create_data_structure(string_input):
     network = {}
     sentence_list = string_input.split('.')
+    is_connected_to_string = 'is connected to '
+    likes_to_play_string = 'likes to play '
     for sentence in sentence_list:
         CurrentName = sentence[0:sentence.find(' ')]
         if len(CurrentName) > 0:
-            if 'is connected' in sentence:
-                startindx = sentence.find('is connected to ') + len('is connected to ')
+            if is_connected_to_string in sentence:
+                startindx = sentence.find(is_connected_to_string) + len(is_connected_to_string)
                 connections_tosplit = sentence[startindx:]
                 connections = connections_tosplit.split(', ')
                 network[CurrentName] = {}
                 network[CurrentName]['Connections'] = connections
 
             elif 'likes to play' in sentence:
-                startindx = sentence.find('likes to play ') + len('likes to play ')
+                startindx = sentence.find(likes_to_play_string) + len(likes_to_play_string)
                 games_tosplit = sentence[startindx :]
                 games = games_tosplit.split(', ')
                 network[CurrentName]['Games'] = games
@@ -205,8 +207,7 @@ def add_connection(network, user_A, user_B):
 def add_new_user(network, user, games):
     if user not in network:
         network[user] = {}
-        network[user]['Connections'] = []
-        network[user]['Games'] = games
+        network[user] = {'Connections': [], 'Games': games}
     return network
 
 # -----------------------------------------------------------------------------
@@ -306,8 +307,9 @@ def path_to_friend(network, user_A, user_B, peep_path = None):
         if user_A == user_B:
             peep_path.append(user_B)
             return peep_path
-        if user_A in peep_path:
+        elif user_A in peep_path:
             return peep_path
+     #this last function checks to see if user_A is already listed in the path so that it won't reiterate what it's already been through.
         else:
             peep_path.append(user_A)
             for peep in get_connections(network, user_A):
@@ -331,8 +333,7 @@ def path_to_friend(network, user_A, user_B, peep_path = None):
 def add_new_user_connections(network, user, connections):
     if user not in network:
         network[user] = {}
-        network[user]['Connections'] = connections
-        network[user]['Games'] = []
+        network[user] = {'Connections': connections, 'Games': []}
     return network
 
 # Return:
